@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.media.MediaView?>
+<?import java.net.URL?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.MainController">
+
+    <stylesheets>
+        <URL value="@styles.css"/>
+    </stylesheets>
+
+    <!-- MENU + SEARCH -->
+    <top>
+        <VBox spacing="4">
+            <MenuBar>
+                <menus>
+                    <Menu text="File">
+                        <items>
+                            <MenuItem text="Save Library..." onAction="#onSaveLibrary"/>
+                            <MenuItem text="Load Library..." onAction="#onLoadLibrary"/>
+                        </items>
+                    </Menu>
+                    <Menu text="Edit">
+                        <items>
+                            <MenuItem text="Undo" onAction="#onUndo"/>
+                        </items>
+                    </Menu>
+                    <Menu text="Help"/>
+                </menus>
+            </MenuBar>
+
+            <HBox spacing="8" alignment="CENTER_LEFT"
+                  style="-fx-background-color: white; -fx-border-color: #dcdcdc; -fx-border-width: 0 0 1 0;">
+                <padding>
+                    <Insets top="10" right="12" bottom="10" left="12"/>
+                </padding>
+
+                <TextField fx:id="searchField"
+                           promptText="🔍 Search by keyword or tag..."
+                           HBox.hgrow="ALWAYS"
+                           style="-fx-font-size: 14px;"/>
+
+                <Button text="Search"
+                        onAction="#onSearchClick"
+                        prefWidth="80"/>
+
+                <Button text="Clear"
+                        onAction="#onClearClick"
+                        prefWidth="80"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- BODY -->
+    <center>
+        <HBox spacing="16">
+            <padding>
+                <Insets top="12" right="12" bottom="12" left="12"/>
+            </padding>
+
+            <!-- LEFT: COLLECTION -->
+            <VBox spacing="10"
+                  prefWidth="260"
+                  minWidth="220"
+                  style="-fx-background-color: #fafafa; -fx-border-color: #dcdcdc; -fx-border-radius:4; -fx-background-radius:4;">
+                <padding>
+                    <Insets top="12" right="12" bottom="12" left="12"/>
+                </padding>
+
+                <Label text="Collection" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+
+                <HBox spacing="8">
+                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                        <Button text="Add New"
+                                onAction="#onNewItem"
+                                maxWidth="Infinity"/>
+                        <Button text="Import"
+                                onAction="#onImportFolder"
+                                maxWidth="Infinity"/>
+                        <Button text="Undo"
+                                onAction="#onUndo"
+                                maxWidth="Infinity"/>
+                    </VBox>
+
+                    <VBox spacing="8" HBox.hgrow="ALWAYS">
+                        <Button fx:id="editButton"
+                                text="Edit"
+                                onAction="#onEdit"
+                                maxWidth="Infinity"/>
+                        <Button fx:id="saveChangesButton"
+                                text="Save Changes"
+                                onAction="#onSaveChanges"
+                                maxWidth="Infinity"/>
+                    </VBox>
+                </HBox>
+
+                <ListView fx:id="libraryList"
+                          VBox.vgrow="ALWAYS"
+                          prefHeight="500"/>
+            </VBox>
+
+            <!-- MIDDLE: DETAILS -->
+            <VBox spacing="10"
+                  HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: #fafafa; -fx-border-color: #dcdcdc; -fx-border-radius:4; -fx-background-radius:4;">
+                <padding>
+                    <Insets top="12" right="12" bottom="12" left="12"/>
+                </padding>
+
+                <Label text="Details" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+
+                <GridPane hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="90" halignment="RIGHT"/>
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="250"/>
+                        <ColumnConstraints minWidth="90"/>
+                    </columnConstraints>
+
+                    <Label text="Title:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <TextField fx:id="titleField"
+                               promptText="Title"
+                               GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+
+                    <Label text="Category:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <ComboBox fx:id="categoryBox"
+                              promptText="Select..."
+                              GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+
+                    <Label text="Tags:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <TextField fx:id="tagsField"
+                               promptText="piano, soothing, study"
+                               GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+
+                    <Label text="Rating:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <HBox spacing="8"
+                          alignment="CENTER_LEFT"
+                          GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="2">
+                        <Slider fx:id="ratingSlider"
+                                min="0" max="5"
+                                blockIncrement="1"
+                                snapToTicks="true"
+                                showTickMarks="false"
+                                showTickLabels="false"
+                                HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="ratingValueLabel"
+                               text="★ 0.0"
+                               style="-fx-text-fill: #e09000; -fx-font-weight: bold;"/>
+                    </HBox>
+
+                    <Label text="File Path:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                    <TextField fx:id="pathField"
+                               promptText="Local file path or URL"
+                               GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                    <Button fx:id="browseButton"
+                            text="Browse"
+                            onAction="#onBrowsePath"
+                            GridPane.rowIndex="4" GridPane.columnIndex="2"
+                            maxWidth="Infinity"/>
+
+                    <Label text="Description:" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.valignment="TOP"/>
+                    <TextArea fx:id="descField"
+                              promptText="Enter description..."
+                              prefRowCount="3"
+                              GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+
+                    <Label text="Preview:" GridPane.rowIndex="6" GridPane.columnIndex="0" GridPane.valignment="TOP"/>
+                    <VBox spacing="8"
+                          GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.columnSpan="2">
+                        <MediaView fx:id="mediaView"
+                                   fitWidth="320"
+                                   fitHeight="180"
+                                   preserveRatio="true"
+                                   style="-fx-border-color: #c0c0c0; -fx-background-color: #000; -fx-border-radius:4; -fx-background-radius:4;"/>
+
+                        <HBox spacing="10">
+                            <Button fx:id="playButton"
+                                    text="► Play"
+                                    onAction="#onPlayMedia"/>
+                            <Button fx:id="pauseButton"
+                                    text="❚❚ Pause"
+                                    onAction="#onPauseMedia"/>
+                        </HBox>
+                    </VBox>
+                </GridPane>
+            </VBox>
+
+            <!-- RIGHT: RECENT + STUDY QUEUE -->
+            <VBox spacing="12" prefWidth="260" minWidth="220">
+
+                <VBox spacing="8"
+                      style="-fx-background-color: #fafafa; -fx-border-color: #dcdcdc; -fx-border-radius:4; -fx-background-radius:4;">
+                    <padding>
+                        <Insets top="12" right="12" bottom="12" left="12"/>
+                    </padding>
+                    <Label text="Recent"
+                           style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+                    <ListView fx:id="recentList"
+                              prefHeight="150"
+                              VBox.vgrow="ALWAYS"/>
+                </VBox>
+
+                <VBox spacing="8"
+                      style="-fx-background-color: #fafafa; -fx-border-color: #dcdcdc; -fx-border-radius:4; -fx-background-radius:4;"
+                      VBox.vgrow="ALWAYS">
+                    <padding>
+                        <Insets top="12" right="12" bottom="12" left="12"/>
+                    </padding>
+
+                    <Label text="Study Queue"
+                           style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+
+                    <ListView fx:id="taskList"
+                              prefHeight="200"
+                              VBox.vgrow="ALWAYS"/>
+
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label text="Deadline:"/>
+                        <DatePicker fx:id="taskDueDatePicker" promptText="Optional" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+
+                    <HBox spacing="8">
+                        <Button text="Add Task"
+                                onAction="#onAddTask"
+                                maxWidth="Infinity"/>
+                        <Button text="Start Next"
+                                onAction="#onProcessNextTask"
+                                maxWidth="Infinity"/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+        </HBox>
+    </center>
+
+    <!-- STATUS BAR -->
+    <bottom>
+        <HBox spacing="6"
+              style="-fx-background-color: #fafafa; -fx-border-color: #dcdcdc; -fx-border-width: 1 0 0 0;"
+              alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="6" right="12" bottom="6" left="12"/>
+            </padding>
+            <Label text="Status:" style="-fx-font-weight: bold;"/>
+            <Label fx:id="statusLabel"
+                   text="Ready"
+                   style="-fx-text-fill: #0066cc;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
